@@ -663,7 +663,7 @@ void t_py_generator::generate_py_struct_definition(ofstream& out,
   */
 
   if (gen_slots_) {
-    indent(out) << "__slots__ = [ " << endl;
+    indent(out) << "__slots__ = [" << endl;
     indent_up();
     for (m_iter = sorted_members.begin(); m_iter != sorted_members.end(); ++m_iter) {
       indent(out) << "'" << (*m_iter)->get_name() << "'," << endl;
