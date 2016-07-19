@@ -414,14 +414,19 @@ output_val(PyObject* output, PyObject* value, TType type, PyObject* typeargs) {
   }
 
   case T_STRING: {
-    Py_ssize_t len = PyString_Size(value);
+    PyObject *unicode = NULL;
+    if (PyUnicode_Check(value) && PyString_Check(typeargs) && strcmp(PyString_AS_STRING(typeargs), "UTF8") == 0) {
+      unicode = PyUnicode_AsUTF8String(value);
+    }
 
+    Py_ssize_t len = PyString_Size(unicode ?: value);
     if (!check_ssize_t_32(len)) {
       return false;
     }
 
     writeI32(output, (int32_t) len);
-    PycStringIO->cwrite(output, PyString_AsString(value), (int32_t) len);
+    PycStringIO->cwrite(output, PyString_AsString(unicode ?: value), (int32_t) len);
+    Py_XDECREF(unicode);
     break;
   }
 
@@ -1007,6 +1012,10 @@ decode_val(DecodeBuffer* input, TType type, PyObject* typeargs) {
     char* buf;
     if (!readBytes(input, &buf, len)) {
       return NULL;
+    }
+
+    if (PyString_Check(typeargs) && strcmp(PyString_AS_STRING(typeargs), "UTF8") == 0) {
+      return PyUnicode_DecodeUTF8(buf, len, 0);
     }
 
     return PyString_FromStringAndSize(buf, len);
