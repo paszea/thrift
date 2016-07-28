@@ -800,7 +800,7 @@ void t_py_generator::generate_py_struct_reader(ofstream& out, t_struct* tstruct)
   indent(out) << "def read(self, iprot):" << endl;
   indent_up();
 
-  indent(out) << "if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated "
+  indent(out) << "if isinstance(iprot, TBinaryProtocol.TBinaryProtocolAccelerated) "
                  "and isinstance(iprot.trans, TTransport.CReadableTransport) "
                  "and self.thrift_spec is not None "
                  "and fastbinary is not None:" << endl;
@@ -869,7 +869,7 @@ void t_py_generator::generate_py_struct_writer(ofstream& out, t_struct* tstruct)
   indent(out) << "def write(self, oprot):" << endl;
   indent_up();
 
-  indent(out) << "if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated "
+  indent(out) << "if isinstance(oprot, TBinaryProtocol.TBinaryProtocolAccelerated) "
                  "and self.thrift_spec is not None "
                  "and fastbinary is not None:" << endl;
   indent_up();

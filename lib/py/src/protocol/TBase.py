@@ -49,7 +49,7 @@ class TBase(object):
     return not (self == other)
 
   def read(self, iprot):
-    if (iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and
+    if (isinstance(iprot, TBinaryProtocol.TBinaryProtocolAccelerated) and
         isinstance(iprot.trans, TTransport.CReadableTransport) and
         self.thrift_spec is not None and
         fastbinary is not None):
@@ -60,7 +60,7 @@ class TBase(object):
     iprot.readStruct(self, self.thrift_spec)
 
   def write(self, oprot):
-    if (oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and
+    if (isinstance(oprot, TBinaryProtocol.TBinaryProtocolAccelerated) and
         self.thrift_spec is not None and
         fastbinary is not None):
       oprot.trans.write(
