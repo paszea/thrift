@@ -83,9 +83,13 @@ public:
 
   void set_map() { valType_ = CV_MAP; }
 
-  void add_map(t_const_value* key, t_const_value* val) { mapVal_[key] = val; }
+  void add_map(t_const_value* key, t_const_value* val) {
+    mapVal_[key] = val;
+    mapKeys_.push_back(key);
+  }
 
   const std::map<t_const_value*, t_const_value*>& get_map() const { return mapVal_; }
+  const std::vector<t_const_value*>& get_map_keys() const { return mapKeys_; }
 
   void set_list() { valType_ = CV_LIST; }
 
@@ -133,6 +137,7 @@ public:
 
 private:
   std::map<t_const_value*, t_const_value*> mapVal_;
+  std::vector<t_const_value*> mapKeys_;
   std::vector<t_const_value*> listVal_;
   std::string stringVal_;
   int64_t intVal_;

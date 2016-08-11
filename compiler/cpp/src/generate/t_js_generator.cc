@@ -551,15 +551,16 @@ string t_js_generator::render_const_value(t_type* type, t_const_value* value) {
     indent_up();
 
     const map<t_const_value*, t_const_value*>& val = value->get_map();
-    map<t_const_value*, t_const_value*>::const_iterator v_iter;
-    for (v_iter = val.begin(); v_iter != val.end(); ++v_iter) {
-      if (v_iter != val.begin())
+    const vector<t_const_value*>& keys = value->get_map_keys();
+    vector<t_const_value*>::const_iterator k_iter;
+    for (k_iter = keys.begin(); k_iter != keys.end(); ++k_iter) {
+      if (k_iter != keys.begin())
         out << "," << endl;
 
-      out << indent() << render_const_value(ktype, v_iter->first);
+      out << indent() << render_const_value(ktype, *k_iter);
 
       out << " : ";
-      out << render_const_value(vtype, v_iter->second);
+      out << render_const_value(vtype, val.find(*k_iter)->second);
     }
 
     indent_down();
