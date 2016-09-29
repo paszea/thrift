@@ -178,12 +178,15 @@ include_concurrency_HEADERS = \
 
 include_protocoldir = $(include_thriftdir)/protocol
 include_protocol_HEADERS = \
+                         src/thrift/protocol/FlatBufferSchemas.h \
                          src/thrift/protocol/TBinaryProtocol.h \
                          src/thrift/protocol/TBinaryProtocol.tcc \
                          src/thrift/protocol/TCompactProtocol.h \
                          src/thrift/protocol/TCompactProtocol.tcc \
                          src/thrift/protocol/TDebugProtocol.h \
                          src/thrift/protocol/TBase64Utils.h \
+                         src/thrift/protocol/TFlatbProtocol.h \
+                         src/thrift/protocol/TFlatbProtocol.tcc \
                          src/thrift/protocol/TJSONProtocol.h \
                          src/thrift/protocol/TMultiplexedProtocol.h \
                          src/thrift/protocol/TProtocolDecorator.h \
