@@ -354,6 +354,7 @@
       <dependency groupId="javax.servlet" artifactId="servlet-api" version="${servlet.version}" scope="provided"/>
       <dependency groupId="org.apache.httpcomponents" artifactId="httpclient" version="${httpclient.version}"/>
       <dependency groupId="org.apache.httpcomponents" artifactId="httpcore" version="${httpcore.version}"/>
+      <dependency groupId="com.google.flatbuffers" artifactId="flatbuffers-java" version="${flatbuffers.version}"/>
     </artifact:pom>
 
     <!-- Generate the pom file -->
