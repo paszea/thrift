@@ -1,6 +1,8 @@
 package org.apache.thrift.protocol;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Stack;
 import java.nio.ByteBuffer;
 import org.apache.thrift.TException;
@@ -55,6 +57,24 @@ public class TFlatbProtocol extends TProtocol {
 
     long integer_val;
     double real_val;
+  }
+
+  class IntFieldValComparator implements Comparator<FieldVal> {
+    @Override
+    public int compare(FieldVal a, FieldVal b) {
+      if (a.integer_val < b.integer_val) return -1;
+      if (a.integer_val > b.integer_val) return 1;
+      return 0;
+    }
+  }
+
+  class RealFieldValComparator implements Comparator<FieldVal> {
+    @Override
+    public int compare(FieldVal a, FieldVal b) {
+      if (a.real_val < b.real_val) return -1;
+      if (a.real_val > b.real_val) return 1;
+      return 0;
+    }
   }
 
   // Store data about a field being written.
@@ -432,9 +452,14 @@ public class TFlatbProtocol extends TProtocol {
       throw new TException("field " + field_schema.name()
           + " is NOT a vector type as it's supposed to be.");
     }
+    boolean isSet =
+      flatb_schema_.getFieldThriftType(field_schema) == TType.SET;
     switch (field_schema.type().element()) {
       case BaseType.Bool :
         {
+          if (isSet) {
+            Collections.sort(finfo.elems, new IntFieldValComparator());
+          }
           fbb_.startVector(1, finfo.elems.size(), 1);
           for (int i = finfo.elems.size() - 1; i >= 0; --i) {
             fbb_.addBoolean(finfo.elems.get(i).integer_val > 0);
@@ -448,6 +473,9 @@ public class TFlatbProtocol extends TProtocol {
         break;
       case BaseType.Short :
         {
+          if (isSet) {
+            Collections.sort(finfo.elems, new IntFieldValComparator());
+          }
           fbb_.startVector(2, finfo.elems.size(), 2);
           for (int i = finfo.elems.size() - 1; i >= 0; --i) {
             fbb_.addShort((short)finfo.elems.get(i).integer_val);
@@ -457,6 +485,9 @@ public class TFlatbProtocol extends TProtocol {
         }
       case BaseType.Int :
         {
+          if (isSet) {
+            Collections.sort(finfo.elems, new IntFieldValComparator());
+          }
           fbb_.startVector(4, finfo.elems.size(), 4);
           for (int i = finfo.elems.size() - 1; i >= 0; --i) {
             fbb_.addInt((int)finfo.elems.get(i).integer_val);
@@ -466,6 +497,9 @@ public class TFlatbProtocol extends TProtocol {
         }
       case BaseType.Long :
         {
+          if (isSet) {
+            Collections.sort(finfo.elems, new IntFieldValComparator());
+          }
           fbb_.startVector(8, finfo.elems.size(), 8);
           for (int i = finfo.elems.size() - 1; i >= 0; --i) {
             fbb_.addLong(finfo.elems.get(i).integer_val);
@@ -475,6 +509,9 @@ public class TFlatbProtocol extends TProtocol {
         }
       case BaseType.Double :
         {
+          if (isSet) {
+            Collections.sort(finfo.elems, new RealFieldValComparator());
+          }
           fbb_.startVector(8, finfo.elems.size(), 8);
           for (int i = finfo.elems.size() - 1; i >= 0; --i) {
             fbb_.addDouble(finfo.elems.get(i).real_val);
@@ -483,6 +520,7 @@ public class TFlatbProtocol extends TProtocol {
           break;
         }
       case BaseType.String :
+        // TODO(xun): sort set<string>
       case BaseType.Vector :
       case BaseType.Obj :
         {
