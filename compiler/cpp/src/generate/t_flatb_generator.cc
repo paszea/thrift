@@ -130,6 +130,12 @@ public:
     } else {
       namespaceprefix_ = "";
     }
+    iter = parsed_options.find("defaultenumvalue");
+    if (iter != parsed_options.end()) {
+      defaultenumvalue_ = std::stoi(iter->second);
+    } else {
+      defaultenumvalue_ = 0;
+    }
   }
 
   virtual ~t_flatb_generator() {}
@@ -152,6 +158,7 @@ private:
   std::string namespacescope_;
   std::string namespacesuffix_;
   std::string namespaceprefix_;
+  int defaultenumvalue_;
   std::ofstream f_fbs_;
   set<string> aux_types_;
 
@@ -422,6 +429,8 @@ void t_flatb_generator::generate_struct(t_struct* tstruct) {
         if (get_const_value(field->get_value(), val, warn)) {
           f_fbs_ << " = " << val;
         }
+    } else if (field->get_type()->is_enum() && defaultenumvalue_) {
+      f_fbs_ << " = " << defaultenumvalue_;
     }
 
     f_fbs_ << " (thrift_id: " << field->get_key()
@@ -448,4 +457,6 @@ THRIFT_REGISTER_GENERATOR(
     "    namespacescope=flatb:  Which namespace scope to use for flatbuffer.\n"
     "                           Value _FILE_ indicates to use the file name as the namespace.\n"
     "    namespacesuffix='':  String to append to namespace.\n"
-    "    namespaceprefix='':  String to prepend to namespace.\n")
+    "    namespaceprefix='':  String to prepend to namespace.\n"
+    "    defaultenumvalue=0:  if an enum field has no default value specified, use this value\n"
+    "                         as its default value.\n")
