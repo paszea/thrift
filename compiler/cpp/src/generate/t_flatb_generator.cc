@@ -206,6 +206,7 @@ void t_flatb_generator::init_generator() {
 
   f_fbs_ << "attribute \"thrift_id\";" << std::endl;
   f_fbs_ << "attribute \"thrift_type\";" << std::endl;
+  f_fbs_ << "attribute \"thrift_enum\";" << std::endl;
   f_fbs_ << "attribute \"aux_type\";" << std::endl;
 
 }
@@ -434,8 +435,9 @@ void t_flatb_generator::generate_struct(t_struct* tstruct) {
     }
 
     f_fbs_ << " (thrift_id: " << field->get_key()
-        << ", thrift_type: " << type_id << ")";
-    f_fbs_ << ";" << std::endl;
+        << ", thrift_type: " << type_id
+        << (field->get_type()->is_enum() ? ", thrift_enum" : "")
+        << ");" << std::endl;
 
     if (err.size() > 0) {
       throw "[flatb-error] " + tstruct->get_name()
